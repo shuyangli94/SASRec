@@ -1,4 +1,4 @@
-from modules import *
+from sasrec_tf.modules import *
 
 
 class Model():
