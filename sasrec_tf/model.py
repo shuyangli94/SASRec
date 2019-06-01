@@ -1,6 +1,5 @@
 from sasrec_tf.modules import *
 
-
 class Model():
     def __init__(self, usernum, itemnum, args, reuse=None):
         self.is_training = tf.placeholder(tf.bool, shape=())
