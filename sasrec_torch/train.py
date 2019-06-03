@@ -7,6 +7,7 @@ if __name__ == "__main__":
 
     from datetime import datetime
 
+    from .model import SASRec
     from .data import load_sequences
 
     # Model parser

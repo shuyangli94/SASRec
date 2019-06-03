@@ -87,13 +87,13 @@ class WarpSampler(object):
                  batch_size=64, max_seq_len=50, n_workers=1):
         """
         Sampler to randomly pick user sequences
-        
+
         Arguments:
             user_sequences {map} -- user_sequences[u] is the interaction sequence for a user
             n_users {int} -- Number of unique users
             n_items {int} -- Number of unique items
             pad_ix {int} -- Index of padding item
-        
+
         Keyword Arguments:
             batch_size {int} -- Size of each batch (default: {64})
             max_seq_len {int} -- Maximum length of an interaction sequence (default: {50})
@@ -133,13 +133,13 @@ class WarpSampler(object):
 def load_sequences(loc, as_dict=True):
     """
     Load user sequence histories
-    
+
     Arguments:
         loc {str} -- Sequence file location
-    
+
     Keyword Arguments:
         as_dict {bool} -- Load sequences as a dictionary (default: {True})
-    
+
     Returns:
         int -- Number of unique users
         int -- Number of unique items
@@ -188,10 +188,10 @@ def print_data_stats(df):
 def get_splits(df, as_dict=True):
     """
     Get training, test, and validation splits
-    
+
     Arguments:
         df {pd.DataFrame} -- Interaction DF, sorted by user and interaction time
-    
+
     Keyword Arguments:
         as_dict {bool} -- Load sequences as dictionaries (default: {True})
     """
@@ -217,7 +217,7 @@ def get_splits(df, as_dict=True):
     dfs = [train_df, holdout_validation, holdout_test]
     if as_dict:
         return [d.groupby('u')['i'].agg(list).to_dict() for d in dfs]
-    
+
     return dfs
 
 '''
