@@ -227,7 +227,6 @@ if __name__ == "__main__":
     import os
     import argparse
 
-    from itertools import chain
     from datetime import datetime
 
     # Parse arguments

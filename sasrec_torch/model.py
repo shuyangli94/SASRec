@@ -1,8 +1,6 @@
 import torch
 import torch.nn as nn
 
-import numpy as np
-
 from .attention import CausalSelfAttention
 from . import count_parameters
 
@@ -52,14 +50,16 @@ class SASRec(nn.Module):
             nn.Linear(self.hidden_size, self.hidden_size, bias=True)
         )
 
-        print('Created "{}" model with {:,} parameters:'.format(
+        print('\nCreated "{}" model with {:,} parameters:'.format(
             self.__class__.__name__, count_parameters(self)
         ))
         print('Hidden size {:,}'.format(self.hidden_size))
         print('Max sequence length {:,}'.format(self.max_seq_len))
         print('Item vocabulary {:,}'.format(self.n_items))
         print('[Dropout: {:,.3f}]'.format(self.dropout))
-    
+
+        print(self)
+
     def forward(self, ixn_seq, verbose=False):
         # E^hat = [M + P]
         input_embedding = self.positional_embedding + self.item_embedding(ixn_seq)
@@ -75,12 +75,38 @@ class SASRec(nn.Module):
         return output
 
 '''
-python -m sasrec_torch.model
+python -m sasrec_torch.model -d 3 -n 10 --data data\\Beauty.txt
 '''
 if __name__ == "__main__":
-    hidden_size = 32
-    max_seq_len = 50
-    n_items = 170000
-    dropout = 0.2
+    import os
+    import argparse
+
+    from datetime import datetime
+
+    from .data import load_sequences
+
+    # Model parser
+    parser = argparse.ArgumentParser(description='SASRec Model')
+    parser.add_argument('--hidden-size', '-d', type=int, default=256, help='Hidden size')
+    parser.add_argument('--max-len', '-n', type=int, default=50, help='Maximum sequence length')
+    parser.add_argument('--data', type=str, default=os.path.join('data', 'Beauty.txt'),
+        help='Location of dataset for training and evaluation')
+    parser.add_argument('--dropout', type=float, default=0.2, help='Dropout rate')
+    args = parser.parse_args()
+
+    # Arguments
+    hidden_size = args.hidden_size
+    max_seq_len = args.max_len
+    dropout = args.dropout
+    data_loc = args.data
+
+    # Get data
+    start = datetime.now()
+    n_users, n_items, train_seq, valid_seq, test_seq = load_sequences(data_loc, as_dict=True)
+    pad_ix = n_items
+    n_items_w_pad = n_items + 1
+    print('{} - Loaded data for splits. Padding index: {}'.format(
+        datetime.now() - start, pad_ix
+    ))
 
     model = SASRec(hidden_size, max_seq_len, n_items, dropout)
